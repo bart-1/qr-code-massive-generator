@@ -1,59 +1,65 @@
-import { ChangeEvent, useCallback, useRef, useState } from "react";
-import QRCode from "react-qr-code";
-// import * as htmlToImage from "html-to-image";
-import { toPng } from "html-to-image";
+import { useState } from "react";
+import QRvCard from "./QRvCard";
+import SwitchBtn from "./SwitchBtn";
+import QRCodePanel from "./QRCodePanel";
 
 const App = () => {
-  const [text, setText] = useState("");
-  const [generateCode, setGenerateCode] = useState("");
+  const [vCardForm, setVCardForm] = useState(false);
 
-  const handleGenerate = (e: ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setGenerateCode(text);
-    onButtonClick;
-  };
-
-  const ref = useRef<HTMLDivElement>(null);
-
-  const onButtonClick = useCallback(() => {
-    if (ref.current === null) {
-      return;
-    }
-
-    toPng(ref.current, { cacheBust: true })
-      .then((dataUrl) => {
-        const link = document.createElement("a");
-        link.download = "my-image-name.svg";
-        link.href = dataUrl;
-        link.click();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [ref]);
+  const [qrDataIn, setQrDataIn] = useState("");
+  
 
   return (
-    <div>
-      <h1>Input: {text}</h1>
-      <p>Start editing to see some magic happen :)</p>
-
-      <form onSubmit={handleGenerate}>
-        {" "}
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.currentTarget.value)}
-        ></input>
-        <button type="submit"> generuj</button>
-      </form>
-      <div ref={ref}>
-        <QRCode value={generateCode} size={400} />
+    <div className="bg-gray-700 mx-auto">
+      <div className="p-3 h-16 bg-black text-white mb-12">
+        <h1 className="font-bold text-2xl text-center">
+          QR code generator v0.1
+        </h1>
       </div>
 
-      <button onClick={onButtonClick}> generuj</button>
+      <div className="mx-auto mb-12 w-fit">
+        <SwitchBtn
+          nameOne="text"
+          nameTwo="vCard"
+          output={(val) => setVCardForm(val)}
+        />
+      </div>
+      <div className="m-auto w-[85%] max-w-[780px] xl:flex ">
+        {vCardForm ? (
+          <QRvCard
+            vcard={false}
+            output={(text) => setQrDataIn(text)}
+            inputsList={{
+              text: "",
+            }}
+          />
+        ) : (
+          <QRvCard
+            output={(text) => setQrDataIn(text)}
+            vcard={true}
+            inputsList={{
+              firstName: "",
+              lastname: "",
+              organization: "",
+              jobTitle: "",
+              street: "",
+              city: "",
+              state: "",
+              postCode: "",
+              country: "",
+              workPhone: "",
+              cellPhone: "",
+              fax: "",
+              email: "",
+              url: "",
+            }}
+          />
+        )}
+       
+      </div>
+      <QRCodePanel inputData={qrDataIn} />
     </div>
   );
 };
-
 
 export default App;
