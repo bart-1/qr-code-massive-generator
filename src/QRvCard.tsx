@@ -36,7 +36,6 @@ END:VCARD`;
   const handleInput = (e: FormEvent<HTMLInputElement>) => {
     const name = e.currentTarget.name;
     const value = e.currentTarget.value;
-
     setVCardForm(
       (state) =>
         (state = {
@@ -44,7 +43,11 @@ END:VCARD`;
           [`${name}`]: value,
         })
     );
-    setUnlockBtn(true);
+    if (value !== "") {
+      setUnlockBtn(true);
+    } else {
+      setUnlockBtn(false);
+    }
   };
   const inputGenerator = Object.keys(inputsList).map((input, index) => (
     <div
