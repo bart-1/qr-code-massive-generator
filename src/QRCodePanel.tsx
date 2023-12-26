@@ -1,23 +1,24 @@
-import { toPng, toSvg } from "html-to-image";
+import { toCanvas, toPng, toSvg } from "html-to-image";
 import { useCallback, useRef } from "react";
 import QRCode from "react-qr-code";
+import { saveToPng } from "./savePng";
 // import { saveToPng } from "./savePng";
 
 interface QRCodePanelProps {
   inputData: string;
 }
 
+type FileType = "svg" | "png" | "canvas";
+
 const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
-    const ref = useRef<HTMLDivElement>(null);
-    
-    const filter = (node:HTMLElement) => {
-    
-            return node.tagName !== "i";
-       
-    }
+  const ref = useRef<HTMLDivElement>(null);
+
+  const filter = (node: HTMLElement) => {
+    return node.tagName !== "i";
+  };
 
   const saveByBrowser = useCallback(
-    (fileType: string) => {
+    (fileType: FileType) => {
       if (ref.current === null) {
         return;
       }
@@ -33,15 +34,24 @@ const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
             console.log(err);
           });
       } else if (fileType === "svg") {
-          
-          
         toSvg(ref.current, { filter: filter })
           .then((dataUrl) => {
             const link = document.createElement("a");
-
             link.download = "my-qr-code.svg";
             link.href = dataUrl;
             link.click();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else if (fileType === "canvas") {
+        toCanvas(ref.current, {
+          cacheBust: true,
+          pixelRatio: 2,
+          style: { textAlign: "center", padding: "0", margin: "0" },
+        })
+          .then((dataUrl) => {
+            saveToPng(dataUrl.toDataURL("image/png"));
           })
           .catch((err) => {
             console.log(err);
@@ -71,8 +81,8 @@ const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
   return (
     <>
       <div className="flex flex-col gap-3 p-3 bg-black w-fit mx-auto mt-12 border-1 rounded-xl shadow-xl">
-              <div
-                  id="qr"
+        <div
+          id="qr"
           ref={ref}
           className="flex justify-center items-center bg-white mx-auto w-[32vw] h-[32vw] max-w-[300px] max-h-[300px]"
         >
@@ -87,7 +97,7 @@ const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
             viewBox={`0 0 256 256`}
           />
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-center">
           <button
             className="w-fit p-3 border-1 rounded-md bg-blue-500 hover:bg-blue-300 self-center"
             onClick={() => saveByBrowser("png")}
@@ -95,13 +105,13 @@ const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
             {" "}
             Save PNG
           </button>
-          <button
+          {/* <button
             className="w-fit p-3 border-1 rounded-md bg-blue-500 hover:bg-blue-300 self-center"
             onClick={() => saveByBrowser("svg")}
           >
             {" "}
             Save SVG
-          </button>
+          </button> */}
           {/* <button
             className="w-fit p-3 border-1 rounded-md bg-blue-500 hover:bg-blue-300 self-center"
             onClick={onButtonClick}
