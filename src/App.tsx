@@ -7,7 +7,6 @@ const App = () => {
   const [vCardForm, setVCardForm] = useState(false);
 
   const [qrDataIn, setQrDataIn] = useState("");
-  
 
   return (
     <div className="bg-gray-700 mx-auto">
@@ -24,7 +23,7 @@ const App = () => {
           output={(val) => setVCardForm(val)}
         />
       </div>
-      <div className="m-auto w-[85%] max-w-[780px] xl:flex ">
+      <div className="mx-auto w-[85%] max-w-[780px] xl:flex justify-center ">
         {vCardForm ? (
           <QRvCard
             vcard={false}
@@ -55,7 +54,6 @@ const App = () => {
             }}
           />
         )}
-       
       </div>
       <QRCodePanel inputData={qrDataIn} />
     </div>
