@@ -8,9 +8,15 @@ interface QRCodePanelProps {
 }
 
 const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
-  const ref = useRef<HTMLDivElement>(null);
+    const ref = useRef<HTMLDivElement>(null);
+    
+    const filter = (node:HTMLElement) => {
+    
+            return node.tagName !== "i";
+       
+    }
 
-  const saveToBrowser = useCallback(
+  const saveByBrowser = useCallback(
     (fileType: string) => {
       if (ref.current === null) {
         return;
@@ -27,9 +33,12 @@ const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
             console.log(err);
           });
       } else if (fileType === "svg") {
-        toSvg(ref.current, { cacheBust: true })
+          
+          
+        toSvg(ref.current, { filter: filter })
           .then((dataUrl) => {
             const link = document.createElement("a");
+
             link.download = "my-qr-code.svg";
             link.href = dataUrl;
             link.click();
@@ -62,7 +71,8 @@ const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
   return (
     <>
       <div className="flex flex-col gap-3 p-3 bg-black w-fit mx-auto mt-12 border-1 rounded-xl shadow-xl">
-        <div
+              <div
+                  id="qr"
           ref={ref}
           className="flex justify-center items-center bg-white mx-auto w-[32vw] h-[32vw] max-w-[300px] max-h-[300px]"
         >
@@ -80,14 +90,14 @@ const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
         <div className="flex justify-between">
           <button
             className="w-fit p-3 border-1 rounded-md bg-blue-500 hover:bg-blue-300 self-center"
-            onClick={() => saveToBrowser("png")}
+            onClick={() => saveByBrowser("png")}
           >
             {" "}
             Save PNG
           </button>
           <button
             className="w-fit p-3 border-1 rounded-md bg-blue-500 hover:bg-blue-300 self-center"
-            onClick={() => saveToBrowser("svg")}
+            onClick={() => saveByBrowser("svg")}
           >
             {" "}
             Save SVG
