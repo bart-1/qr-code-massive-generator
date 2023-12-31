@@ -1,7 +1,7 @@
 import { toCanvas, toPng, toSvg } from "html-to-image";
 import { useCallback, useRef } from "react";
 import QRCode from "react-qr-code";
-import { saveToPng } from "./savePng";
+import { saveToPng } from "./helpers";
 // import { saveToPng } from "./savePng";
 
 interface QRCodePanelProps {
@@ -51,7 +51,7 @@ const QRCodePanel = ({ inputData }: QRCodePanelProps) => {
           style: { textAlign: "center", padding: "0", margin: "0" },
         })
           .then((dataUrl) => {
-            saveToPng(dataUrl.toDataURL("image/png"));
+            saveToPng(dataUrl.toDataURL("image/png"), "my");
           })
           .catch((err) => {
             console.log(err);
