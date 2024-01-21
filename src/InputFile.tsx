@@ -1,14 +1,18 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { arraysArrayToObject, fileDataStringToArraysArray } from "./helpers";
+import {
+  FileCSVData,
+  changeMultiArrayToObjectsArray,
+  convertDataStringToMultiArray,
+} from "./helpers";
 
 interface InputFIleProps {
-  output: (data: {}[]) => void;
+  output: (data: FileCSVData[]) => void;
 }
 
 const InputFile = ({ output }: InputFIleProps) => {
   const [file, setFile] = useState<File | Blob>();
   const [fileData, setFileData] = useState<string | ArrayBuffer>();
-  const [outputReadyData, setOutputReadyData] = useState<{}[]>();
+  const [outputReadyData, setOutputReadyData] = useState<FileCSVData[]>();
 
   useEffect(() => {
     if (outputReadyData) output(outputReadyData);
@@ -16,8 +20,8 @@ const InputFile = ({ output }: InputFIleProps) => {
 
   useEffect(() => {
     if (file && fileData) {
-      const parsedFileData = fileDataStringToArraysArray(fileData);
-      const objectsArrayFileData = arraysArrayToObject(parsedFileData);
+      const parsedFileData = convertDataStringToMultiArray(fileData);
+        const objectsArrayFileData = changeMultiArrayToObjectsArray(parsedFileData);
       setOutputReadyData(objectsArrayFileData);
     }
   }, [fileData]);
