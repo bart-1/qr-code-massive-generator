@@ -7,14 +7,10 @@ interface QRCodePanelProps {
   multiDataArray: FileCSVData[] | undefined;
 }
 
-const MassiveQRCodePanel = ({
-  multiDataArray,
-}: QRCodePanelProps) => {
-    const refs = useRef<HTMLDivElement[]>([]);
-    
+const MassiveQRCodePanel = ({ multiDataArray }: QRCodePanelProps) => {
+  const refs = useRef<HTMLDivElement[]>([]);
 
-
-    const saveOnServer = () => {
+  const saveOnServer = () => {
     if (refs.current === null) return;
 
     refs.current.map((ref, index) =>
@@ -44,7 +40,7 @@ const MassiveQRCodePanel = ({
         refs.current[index] = el!;
       }}
     >
-      <div className="fixed">
+     
         <QRCode
           value={createVCardString(el)}
           style={{
@@ -56,7 +52,7 @@ const MassiveQRCodePanel = ({
           viewBox={`0 0 256 256`}
         />
       </div>
-    </div>
+    
   ));
 
   return (
