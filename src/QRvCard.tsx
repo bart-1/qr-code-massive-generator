@@ -1,36 +1,29 @@
 import { FormEvent, useEffect, useState } from "react";
+import { FileCSVData, initialFileCSVData, createVCardString } from "./helpers";
 
 interface QRvCardProps {
   output: (vCard: string) => void;
-  inputsList: { [key: string]: string };
-  vcard: boolean;
+  isVCard: boolean;
 }
 
-const QRvCard = ({ output, inputsList, vcard }: QRvCardProps) => {
-  const [vCardForm, setVCardForm] = useState(inputsList);
+const QRvCard = ({ output, isVCard }: QRvCardProps) => {
+  const [vCardForm, setVCardForm] = useState<FileCSVData>(initialFileCSVData);
   const [unlockBtn, setUnlockBtn] = useState(false);
 
   useEffect(() => {
     setUnlockBtn(false);
   }, []);
 
-  const vCard = `BEGIN:VCARD
-VERSION:3.0
-N:${vCardForm.lastname};${vCardForm.firstName}
-FN:${vCardForm.firstName} ${vCardForm.lastname}
-ORG:${vCardForm.organization}
-TITLE:${vCardForm.jobTitle}
-ADR:;;${vCardForm.street};${vCardForm.city};${vCardForm.state};${vCardForm.postCode};${vCardForm.country}
-TEL;WORK;VOICE:${vCardForm.workPhone}
-TEL;CELL:${vCardForm.cellPhone}
-TEL;FAX:${vCardForm.fax}
-EMAIL;WORK;INTERNET:${vCardForm.email}
-URL:${vCardForm.url}
-END:VCARD`;
+  useEffect(() => {
+    setUnlockBtn(false);
+    setVCardForm(initialFileCSVData);
+  }, [isVCard]);
 
   const handleForm = (e: FormEvent) => {
     e.preventDefault();
-    vcard ? output(vCard) : output(vCardForm.text);
+    isVCard
+      ? output(createVCardString(vCardForm))
+      : output(vCardForm.firstname);
   };
 
   const handleInput = (e: FormEvent<HTMLInputElement>) => {
@@ -49,7 +42,7 @@ END:VCARD`;
       setUnlockBtn(false);
     }
   };
-  const inputGenerator = Object.keys(inputsList).map((input, index) => (
+  const inputGenerator = Object.keys(vCardForm).map((input, index) => (
     <div
       className="flex align-middle justify-between w-[370px] border-0 m-1 border-gray-700 rounded-r-md"
       key={index}
@@ -59,11 +52,22 @@ END:VCARD`;
     </div>
   ));
 
+  const singleInput = (
+    <div className="flex align-middle justify-between w-[370px] border-0 m-1 border-gray-700 rounded-r-md">
+      <label className="self-center uppercase">Text:</label>
+      <input
+        className="h-8 self-center"
+        name={`firstname`}
+        onChange={handleInput}
+      />
+    </div>
+  );
+
   return (
     <>
       <div className=" pt-3 rounded-xl border-black bg-gray-500 shadow-xl">
         <form className="flex flex-wrap justify-center" onSubmit={handleForm}>
-          {inputGenerator}
+          {isVCard ? inputGenerator : singleInput}
           <div className="bg-black p-2 w-full items-center rounded-b-xl border-1 mt-2 h-16 text-center justify-center">
             <button
               className={`w-fit p-3 border-1 ${
