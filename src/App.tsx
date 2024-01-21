@@ -20,7 +20,7 @@ const App = () => {
     <div className="bg-gray-700 mx-auto">
       <div className="p-3 h-16 bg-black text-white mb-12">
         <h1 className="font-bold text-2xl text-center">
-          QR code generator v0.1
+          QR code generator v0.2
         </h1>
       </div>
 
