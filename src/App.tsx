@@ -35,15 +35,9 @@ const App = () => {
           </div>
           <div className="mx-auto w-[85%] max-w-[780px] xl:flex justify-center ">
             {vCardForm ? (
-              <QRvCard
-                isVCard={false}
-                output={(text) => setQrDataIn(text)}
-              />
+              <QRvCard isVCard={false} output={(text) => setQrDataIn(text)} />
             ) : (
-              <QRvCard
-                isVCard={true}
-                output={(text) => setQrDataIn(text)}
-              />
+              <QRvCard isVCard={true} output={(text) => setQrDataIn(text)} />
             )}
           </div>
         </>
@@ -59,6 +53,16 @@ const App = () => {
         </>
       )}
       <CheckBox output={(agreement) => setIsMultiData(agreement)} />
+      <div className="mx-auto mt-4 w-fit">
+        <a
+          className="w-fit text-black hover:text-gray-500 text-center underline"
+          href="./qr-db-matrix.xlsx"
+        >
+          <p>
+            Click here <p>and get DB matrix </p>(qr-db.matrix.xlsx).
+          </p>
+        </a>
+      </div>
     </div>
   );
 };
