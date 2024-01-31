@@ -1,7 +1,7 @@
 {
   "name": "qr-code-massive-generator",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "tailwind": "npx tailwindcss -i ./src/main.css -o ./dist/output.css --watch",
