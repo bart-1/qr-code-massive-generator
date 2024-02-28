@@ -1,7 +1,7 @@
 {
   "name": "qr-code-massive-generator",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "scripts": {
     "tailwind": "npx tailwindcss -i ./src/main.css -o ./dist/output.css --watch",
@@ -17,7 +17,8 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
     "react-native-svg": "^14.1.0",
-    "react-qr-code": "^2.0.12"
+    "react-qr-code": "^2.0.12",
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
