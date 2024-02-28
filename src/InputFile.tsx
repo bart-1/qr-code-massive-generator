@@ -4,18 +4,22 @@ import {
   changeMultiArrayToObjectsArray,
   convertDataStringToMultiArray,
 } from "./helpers";
+import { useAppStore } from "./AppStore";
 
-interface InputFIleProps {
-  output: (data: FileCSVData[]) => void;
-}
 
-const InputFile = ({ output }: InputFIleProps) => {
+
+const InputFile = () => {
   const [file, setFile] = useState<File | Blob>();
   const [fileData, setFileData] = useState<string | ArrayBuffer>();
   const [outputReadyData, setOutputReadyData] = useState<FileCSVData[]>();
 
+  const setFileDataRecordsArray = useAppStore(
+    (state) => state.setFileDataRecordsArray
+  );
+
+
   useEffect(() => {
-    if (outputReadyData) output(outputReadyData);
+    if (outputReadyData) setFileDataRecordsArray(outputReadyData);
   }, [outputReadyData]);
 
   useEffect(() => {

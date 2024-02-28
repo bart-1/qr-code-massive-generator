@@ -1,20 +1,24 @@
-import { useState } from "react";
 import QRvCard from "./QRvCard";
 import SwitchBtn from "./SwitchBtn";
 import QRCodePanel from "./QRCodePanel";
 import InputFile from "./InputFile";
 import CheckBox from "./CheckBox";
-import { FileCSVData } from "./helpers";
 import MassiveQRCodePanel from "./MassiveQRCodePanel";
+import { useAppStore } from "./AppStore";
+import ZipLink from "./ZipLink";
 
 const App = () => {
-  const [vCardForm, setVCardForm] = useState(false);
+  const useVCardForm = useAppStore((state) => state.useVCardForm);
+  const setUseVCardForm = useAppStore((state) => state.setUseVCardForm);
 
-  const [qrDataIn, setQrDataIn] = useState("");
-  const [fileOutputData, setFileOutputData] = useState<FileCSVData[]>();
-  const [isMultiData, setIsMultiData] = useState(false);
+  const qrCreatorInputString = useAppStore(
+    (state) => state.qrCreatorInputString
+  );
 
-
+  const useMultiRecordsFile = useAppStore((state) => state.useMultiRecordsFile);
+  const setUseMultiRecordsFile = useAppStore(
+    (state) => state.setUseMultiRecordsFile
+  );
 
   return (
     <div className="bg-gray-700 mx-auto">
@@ -24,45 +28,46 @@ const App = () => {
         </h1>
       </div>
 
-      {!isMultiData ? (
+      {!useMultiRecordsFile ? (
         <>
           <div className="mx-auto mb-12 w-fit">
             <SwitchBtn
               nameOne="text"
               nameTwo="vCard"
-              output={(val) => setVCardForm(val)}
+              output={(val) => setUseVCardForm(val)}
             />
           </div>
           <div className="mx-auto w-[85%] max-w-[780px] xl:flex justify-center ">
-            {vCardForm ? (
-              <QRvCard isVCard={false} output={(text) => setQrDataIn(text)} />
+            {useVCardForm ? (
+              <QRvCard isVCard={false} />
             ) : (
-              <QRvCard isVCard={true} output={(text) => setQrDataIn(text)} />
+              <QRvCard isVCard={true} />
             )}
           </div>
         </>
       ) : (
         ""
       )}
-      {!isMultiData ? (
-        <QRCodePanel inputData={qrDataIn} />
+      {!useMultiRecordsFile ? (
+        <QRCodePanel inputData={qrCreatorInputString} />
       ) : (
         <>
-          <MassiveQRCodePanel multiDataArray={fileOutputData} />
-          <InputFile output={(data) => setFileOutputData(data)} />
+          <MassiveQRCodePanel />
+          <InputFile />
         </>
       )}
-      <CheckBox output={(agreement) => setIsMultiData(agreement)} />
+      <CheckBox output={(agreement) => setUseMultiRecordsFile(agreement)} />
       <div className="mx-auto mt-4 w-fit">
         <a
           className="w-fit text-black hover:text-gray-500 text-center underline"
           href="./qr-db-matrix.xlsx"
         >
-          <p>
-            Click here <p>and get DB matrix </p>(qr-db.matrix.xlsx).
-          </p>
+          <span>
+            Click here <span>and get DB matrix </span>(qr-db.matrix.xlsx).
+          </span>
         </a>
       </div>
+      <ZipLink />
     </div>
   );
 };

@@ -1,14 +1,19 @@
 import { FormEvent, useEffect, useState } from "react";
 import { FileCSVData, initialFileCSVData, createVCardString } from "./helpers";
+import { useAppStore } from "./AppStore";
 
 interface QRvCardProps {
-  output: (vCard: string) => void;
   isVCard: boolean;
 }
 
-const QRvCard = ({ output, isVCard }: QRvCardProps) => {
+const QRvCard = ({ isVCard }: QRvCardProps) => {
   const [vCardForm, setVCardForm] = useState<FileCSVData>(initialFileCSVData);
   const [unlockBtn, setUnlockBtn] = useState(false);
+
+  const setQrCreatorInputString
+    = useAppStore(
+     (state) => state.setQrCreatorInputString
+   );
 
   useEffect(() => {
     setUnlockBtn(false);
@@ -22,8 +27,8 @@ const QRvCard = ({ output, isVCard }: QRvCardProps) => {
   const handleForm = (e: FormEvent) => {
     e.preventDefault();
     isVCard
-      ? output(createVCardString(vCardForm))
-      : output(vCardForm.firstname);
+      ? setQrCreatorInputString(createVCardString(vCardForm))
+      : setQrCreatorInputString(vCardForm.firstname);
   };
 
   const handleInput = (e: FormEvent<HTMLInputElement>) => {

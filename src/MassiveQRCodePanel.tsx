@@ -1,34 +1,60 @@
-import BussyAnimIco from "./BussyAnimIco";
-import { FileCSVData, createVCardString } from "./helpers";
+import { useEffect } from "react";
+import BussyAnimIco from "./BussyIcon";
+import { createVCardString, zipFiles } from "./helpers";
 import QRCodeSave from "./QRCodeSave";
+import { useAppStore } from "./AppStore";
 
-interface QRCodePanelProps {
-  multiDataArray: FileCSVData[] | undefined;
-}
+const MassiveQRCodePanel = () => {
+  const fileDataRecordsArray = useAppStore(
+    (state) => state.fileDataRecordsArray
+  );
+  const setZipIsReady = useAppStore((state) => state.setZipIsReady);
+  const setFolderName = useAppStore((state) => state.setFolderName);
+  const folderName = useAppStore((state) => state.folderName);
+  const generatorProgress = useAppStore((state) => state.generatorProgress);
 
-const MassiveQRCodePanel = ({ multiDataArray }: QRCodePanelProps) => {
-  if (!multiDataArray) return <div></div>;
-  const qrGenerator = multiDataArray.map((el, index) => (
+  if (!fileDataRecordsArray) return <div></div>;
+
+  useEffect(() => {
+    setFolderName();
+  }, []);
+
+  useEffect(() => {
+    if (
+      generatorProgress === fileDataRecordsArray.length - 1 &&
+      generatorProgress > 0
+      ) {
+      zipper();
+    }
+  }, [generatorProgress]);
+  
+  const zipper = async () => {
+    const zips = await zipFiles(folderName);
+    zips ? setZipIsReady(true) : setZipIsReady(false)
+
+  }
+
+  const qrGenerator = fileDataRecordsArray.map((el, index) => (
     <div
       key={"qr" + index}
-      className={`flex justify-center items-center bg-white mx-auto w-[32vw] h-[32vw] max-w-[300px] max-h-[300px]`}
+      className={`absolute justify-center items-center bg-white mx-auto w-[32vw] h-[32vw] max-w-[300px] max-h-[300px]`}
     >
-      <QRCodeSave qr={createVCardString(el)} />
+      <QRCodeSave qr={createVCardString(el)} index={index} />
     </div>
   ));
 
   return (
     <>
       <div className="p-3 bg-black w-[324px] h-[324px] mx-auto mt-12 border-1 rounded-xl shadow-xl">
-        <div className="justify-center overflow-hidden">
-          <div
-            id="qr"
-            className="fixed justify-center h-[300px] w-[300px] items-center mx-auto overflow-hidden bg-white"
-          >
-            <div className="flex w-full h-full justify-center items-center">
-              <BussyAnimIco switchOnOff={true} />
-            </div>
+        <div
+          id="qr"
+          className="absolute justify-center h-[300px] w-[300px] items-center mx-auto overflow-hidden bg-white over"
+        >
+          <div className="flex z-10 h-full justify-center items-center">
+            <BussyAnimIco switchOnOff={true} />
+          </div>
 
+          <div className="flex z-10 h-full justify-center items-center">
             {qrGenerator}
           </div>
         </div>
