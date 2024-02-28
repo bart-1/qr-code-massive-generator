@@ -5,11 +5,11 @@ import { AiOutlineQrcode } from "react-icons/ai";
 import { MdOutlineQrCode, MdOutlineQrCode2 } from "react-icons/md";
 
 
-interface BussyAnimIcoProps {
+interface BussyIconProps {
     switchOnOff: boolean;
 }
 
-const BussyAnimIco = ({switchOnOff}: BussyAnimIcoProps) => {
+const BussyIcon = ({switchOnOff}: BussyIconProps) => {
     const icoArr = [
       <IoQrCodeOutline />,
       <IoQrCodeSharp />,
@@ -66,4 +66,4 @@ const BussyAnimIco = ({switchOnOff}: BussyAnimIcoProps) => {
     </>
   );
 };
-export default BussyAnimIco;
+export default BussyIcon;
