@@ -44,9 +44,11 @@ export const convertDataStringToMultiArray = (
   return secondStep;
 };
 
-export const changeMultiArrayToObjectsArray = (array: Array<string[]>): FileCSVData[] => {
+export const changeMultiArrayToObjectsArray = (
+  array: Array<string[]>
+): FileCSVData[] => {
   const keysArray = array[0];
-  const  objectsArray: FileCSVData[] = [initialFileCSVData];
+  const objectsArray: FileCSVData[] = [initialFileCSVData];
   let singleObject: FileCSVData = initialFileCSVData;
 
   array.map((arr) => {
@@ -60,19 +62,71 @@ export const changeMultiArrayToObjectsArray = (array: Array<string[]>): FileCSVD
   return objectsArray;
 };
 
-export const saveToPng = (img: string, fileName: string | number) => {
-  fetch("http://127.0.0.1/save-png.php", {
+export const saveToPng = async (
+  img: string,
+  fileName: string | number,
+  folderName: string
+) => {
+  let response = false;
+  await fetch("http://localhost:8001/php/save-png.php", {
     method: "POST",
-    mode: "no-cors",
+    mode: "cors",
     body: JSON.stringify({
       img: img,
       fileName: `qr_${fileName}`,
+      folderName: `qr_${folderName}`,
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
-  });
+  })
+    .then((res) =>
+      res.status === 200 ? (response = true) : (response = false)
+    )
+
+    .catch((err) => {
+      console.log(err);
+    });
+  return response;
 };
+export const zipFiles = async (zipName: string) => {
+  let response = false;
+
+  await fetch("http://localhost:8001/php/zip-files.php", {
+    method: "POST",
+    mode: "cors",
+    body: JSON.stringify({
+      zipName: `qr_${zipName}`,
+    }),
+
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then((res) =>
+      res.status === 200 ? (response = true) : (response = false)
+    )
+    .catch((err) => {
+      console.log(err);
+    });
+  return response;
+};
+
+// export const downloadFile = (path: string) => {
+//   fetch("http://localhost:8001/php/download-file.php", {
+//     method: "POST",
+//     mode:"cors",
+//     body: JSON.stringify({
+//       path: path,
+//     }),
+
+//     headers: {
+//       "Content-type": "application/json; charset=UTF-8",
+//     },
+//   }).catch((err) => {
+//     console.log(err);
+//   });
+// };
 
 export const createVCardString = (vCardForm: FileCSVData): string => {
   return `BEGIN:VCARD
